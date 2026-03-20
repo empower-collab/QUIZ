@@ -671,7 +671,7 @@
 
 
 <!-- ══════════════════════════════════════════
-     SCREEN 3 — EMAIL GATE (Kit)
+     SCREEN 3 — EMAIL GATE (Silent Kit submission)
 ══════════════════════════════════════════ -->
 <div id="screen-email" class="screen">
   <p class="gate-eyebrow">Your Profile Is Ready</p>
@@ -680,40 +680,20 @@
     Enter your email below. Your full three-part profile — where you're stuck, what wound is running you, and how you protect yourself from knowing it — will reveal itself immediately.
   </p>
 
-  <!-- Kit form wrapper — styled to match the quiz aesthetic -->
   <div class="kit-wrapper">
-    <script src="https://f.convertkit.com/ckjs/ck.5.js"></script>
-    <form
-      action="https://app.kit.com/forms/9225310/subscriptions"
-      class="seva-form formkit-form bts-kit-form"
-      method="post"
-      data-sv-form="9225310"
-      data-uid="a77f24feb1"
-      data-format="inline"
-      data-version="5"
-      data-options="{&quot;settings&quot;:{&quot;after_subscribe&quot;:{&quot;action&quot;:&quot;message&quot;,&quot;success_message&quot;:&quot;One moment — revealing your profile...&quot;,&quot;redirect_url&quot;:&quot;&quot;},&quot;powered_by&quot;:{&quot;show&quot;:false}},&quot;version&quot;:&quot;5&quot;}"
-      min-width="400 500 600 700 800"
-    >
-      <div data-style="clean">
-        <ul class="formkit-alert formkit-alert-error" data-element="errors" data-group="alert"></ul>
-        <div data-element="fields" data-stacked="true" class="seva-fields formkit-fields">
-          <div class="formkit-field">
-            <input
-              class="formkit-input bts-input"
-              name="email_address"
-              aria-label="Email Address"
-              placeholder="Your email address"
-              required=""
-              type="email"
-            >
-          </div>
-          <button data-element="submit" class="formkit-submit bts-submit">
-            <div class="formkit-spinner"><div></div><div></div><div></div></div>
-            <span>Reveal My Profile</span>
-          </button>
-        </div>
-      </div>
-    </form>
+    <div class="email-form-custom">
+      <input
+        type="email"
+        id="email-input-custom"
+        class="bts-input"
+        placeholder="Your email address"
+        required
+      >
+      <p id="email-error" style="color:#c0392b;font-size:11px;letter-spacing:0.1em;margin-top:8px;display:none;">Please enter a valid email address.</p>
+      <button id="reveal-btn" class="bts-submit" style="width:100%;margin-top:14px;">
+        <span>Reveal My Profile</span>
+      </button>
+    </div>
     <p class="privacy-note">No spam. Ever. Unsubscribe anytime.</p>
   </div>
 </div>
@@ -1213,48 +1193,50 @@ function showResults() {
   showScreen('screen-results');
 }
 
-// ── KIT FORM INTEGRATION
-// Watch for Kit's success message and trigger results reveal
-function captureAndReveal() {
-  // Kit handles its own submission — we just watch for the success state
-  // and then show results after a short delay so Kit can process
-  setTimeout(() => {
-    const errors = document.querySelector('.formkit-alert-error');
-    const hasError = errors && errors.children.length > 0;
-    if (!hasError) {
-      setTimeout(showResults, 1200);
-    }
-  }, 800);
+// ── KIT FORM INTEGRATION — Silent fetch submission
+function submitToKitAndReveal() {
+  const emailInput = document.getElementById('email-input-custom');
+  const errorMsg = document.getElementById('email-error');
+  const email = emailInput ? emailInput.value.trim() : '';
+
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    if (errorMsg) errorMsg.style.display = 'block';
+    return;
+  }
+  if (errorMsg) errorMsg.style.display = 'none';
+
+  // Show results immediately
+  showResults();
+
+  // Submit to Kit silently in background
+  const formData = new FormData();
+  formData.append('email_address', email);
+  fetch('https://app.kit.com/forms/9225310/subscriptions', {
+    method: 'POST',
+    body: formData,
+    mode: 'no-cors'
+  }).catch(() => {});
 }
 
-// Wire up all buttons via event listeners (more compatible with Carrd's sandbox)
+// Wire up all buttons
 document.addEventListener('DOMContentLoaded', () => {
-
-  // Begin button
   const beginBtn = document.querySelector('.btn-primary');
   if (beginBtn) beginBtn.addEventListener('click', startQuiz);
 
-  // Next button
   const nextBtn = document.getElementById('btn-next');
   if (nextBtn) nextBtn.addEventListener('click', goNext);
 
-  // Back button
   const backBtn = document.getElementById('btn-back');
   if (backBtn) backBtn.addEventListener('click', goBack);
 
-  // Kit submit button
-  const kitBtn = document.querySelector('.bts-submit');
-  if (kitBtn) kitBtn.addEventListener('click', captureAndReveal);
+  const revealBtn = document.getElementById('reveal-btn');
+  if (revealBtn) revealBtn.addEventListener('click', submitToKitAndReveal);
 
-  // Kit MutationObserver for success
-  const observer = new MutationObserver(() => {
-    const success = document.querySelector('.formkit-alert-success');
-    if (success && success.children.length > 0) {
-      setTimeout(showResults, 900);
-      observer.disconnect();
-    }
-  });
-  const form = document.querySelector('.seva-form');
-  if (form) observer.observe(form, { childList: true, subtree: true });
+  const emailInput = document.getElementById('email-input-custom');
+  if (emailInput) {
+    emailInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') submitToKitAndReveal();
+    });
+  }
 });
 </script>
