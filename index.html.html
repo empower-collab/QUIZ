@@ -1,0 +1,1260 @@
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --ink: #1a1410;
+    --parchment: #f5f0e8;
+    --warm-white: #faf8f4;
+    --gold: #b8935a;
+    --gold-light: #d4aa72;
+    --deep: #2c1f14;
+    --muted: #8a7968;
+    --accent: #6b4226;
+    --surface: #ede8df;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--warm-white);
+    color: var(--ink);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* ── DECORATIVE LINES ── */
+  .deco-line {
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    position: fixed;
+    top: 0; bottom: 0;
+    opacity: 0.3;
+  }
+  .deco-line.left { left: 48px; }
+  .deco-line.right { right: 48px; }
+
+  /* ── SCREENS ── */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    animation: fadeIn 0.7s ease forwards;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LANDING ── */
+  #screen-landing {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    text-align: center;
+    position: relative;
+  }
+
+  .brand-mark {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 64px;
+  }
+
+  .landing-eyebrow {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .landing-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 8vw, 88px);
+    line-height: 1.0;
+    color: var(--ink);
+    max-width: 800px;
+    margin-bottom: 32px;
+  }
+
+  .landing-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .landing-sub {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 56px;
+    letter-spacing: 0.02em;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 56px;
+    width: 100%;
+    max-width: 320px;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--gold); opacity: 0.3; }
+  .divider-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); opacity: 0.6; }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 18px 52px;
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .landing-footer-note {
+    margin-top: 48px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    opacity: 0.6;
+  }
+
+  /* ── QUIZ ── */
+  #screen-quiz {
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 24px 80px;
+  }
+
+  .quiz-header {
+    text-align: center;
+    margin-bottom: 64px;
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    justify-content: center;
+  }
+
+  .progress-bar-bg {
+    flex: 1;
+    max-width: 280px;
+    height: 1px;
+    background: var(--surface);
+    position: relative;
+  }
+
+  .progress-bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--gold);
+    transition: width 0.5s ease;
+  }
+
+  .progress-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .question-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(22px, 4vw, 34px);
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .options-grid {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .option-btn {
+    padding: 20px 28px;
+    background: var(--warm-white);
+    border: 1px solid var(--surface);
+    color: var(--ink);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+  }
+
+  .option-btn:hover {
+    border-color: var(--gold);
+    background: var(--parchment);
+    padding-left: 36px;
+  }
+
+  .option-btn.selected {
+    border-color: var(--gold);
+    background: var(--parchment);
+    padding-left: 36px;
+  }
+
+  .option-btn.selected::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+  }
+
+  .quiz-nav {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .btn-next {
+    padding: 16px 40px;
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .btn-next.ready {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .btn-next.ready:hover { background: var(--accent); }
+
+  .btn-back {
+    padding: 16px 24px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--surface);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .btn-back:hover { border-color: var(--muted); color: var(--ink); }
+
+  /* ── EMAIL GATE ── */
+  #screen-email {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    text-align: center;
+  }
+
+  .gate-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+  }
+
+  .gate-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 1.1;
+    color: var(--ink);
+    max-width: 560px;
+    margin-bottom: 20px;
+  }
+
+  .gate-sub {
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--muted);
+    max-width: 400px;
+    margin: 0 auto 48px;
+  }
+
+  .email-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .email-input {
+    width: 100%;
+    padding: 18px 24px;
+    background: var(--warm-white);
+    border: 1px solid var(--surface);
+    color: var(--ink);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    outline: none;
+    transition: border-color 0.25s;
+  }
+
+  .email-input:focus { border-color: var(--gold); }
+  .email-input::placeholder { color: var(--muted); opacity: 0.6; }
+
+  .name-input {
+    width: 100%;
+    padding: 18px 24px;
+    background: var(--warm-white);
+    border: 1px solid var(--surface);
+    color: var(--ink);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    outline: none;
+    transition: border-color 0.25s;
+  }
+
+  .name-input:focus { border-color: var(--gold); }
+  .name-input::placeholder { color: var(--muted); opacity: 0.6; }
+
+  .privacy-note {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    opacity: 0.5;
+    margin-top: 8px;
+  }
+
+  /* ── RESULTS ── */
+  #screen-results {
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 24px;
+  }
+
+  .results-header {
+    text-align: center;
+    margin-bottom: 72px;
+    max-width: 680px;
+  }
+
+  .results-greeting {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+
+  .results-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+
+  .results-title em { font-style: italic; color: var(--gold); }
+
+  .results-summary {
+    font-size: 13px;
+    line-height: 2;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .profile-cards {
+    width: 100%;
+    max-width: 780px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 64px;
+  }
+
+  .profile-card {
+    padding: 40px 48px;
+    background: var(--parchment);
+    border-left: 3px solid var(--gold);
+    position: relative;
+  }
+
+  .card-number {
+    position: absolute;
+    top: 40px; right: 48px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: var(--gold);
+    opacity: 0.12;
+    line-height: 1;
+  }
+
+  .card-label {
+    font-size: 9px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 26px;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .card-body {
+    font-size: 12px;
+    line-height: 1.9;
+    color: #5a4e42;
+    max-width: 560px;
+  }
+
+  .invitation-block {
+    width: 100%;
+    max-width: 780px;
+    padding: 56px 48px;
+    background: var(--ink);
+    color: var(--parchment);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .invitation-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 24px;
+  }
+
+  .invitation-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+
+  .invitation-body {
+    font-size: 12px;
+    line-height: 1.9;
+    color: #c4b8a8;
+    max-width: 480px;
+    margin: 0 auto 40px;
+  }
+
+  .btn-light {
+    display: inline-block;
+    padding: 16px 44px;
+    background: transparent;
+    color: var(--parchment);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    border: 1px solid var(--gold);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-light:hover {
+    background: var(--gold);
+    color: var(--ink);
+  }
+
+  /* ── ORNAMENT ── */
+  .ornament {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--gold);
+    opacity: 0.4;
+    letter-spacing: 0.3em;
+    margin: 32px 0;
+  }
+
+  @media (max-width: 600px) {
+    .deco-line { display: none; }
+    .profile-card { padding: 32px 28px; }
+    .invitation-block { padding: 40px 28px; }
+    .card-number { display: none; }
+  }
+
+  /* ── KIT FORM OVERRIDES ── */
+  .kit-wrapper {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .bts-kit-form { width: 100% !important; max-width: 420px !important; background: transparent !important; border: none !important; padding: 0 !important; }
+  .bts-kit-form [data-style="clean"] { width: 100% !important; padding: 0 !important; }
+  .bts-kit-form .formkit-fields { display: flex !important; flex-direction: column !important; gap: 14px !important; margin: 0 !important; }
+  .bts-kit-form .formkit-field, .bts-kit-form .formkit-submit { margin: 0 !important; flex: none !important; }
+  .bts-input {
+    width: 100% !important; padding: 18px 24px !important;
+    background: var(--warm-white) !important; border: 1px solid var(--surface) !important;
+    border-radius: 0 !important; color: var(--ink) !important;
+    font-family: 'Montserrat', sans-serif !important; font-size: 12px !important;
+    font-weight: 300 !important; letter-spacing: 0.05em !important;
+    outline: none !important; transition: border-color 0.25s !important;
+  }
+  .bts-input:focus { border-color: var(--gold) !important; }
+  .bts-input::placeholder { color: var(--muted) !important; opacity: 0.6 !important; }
+  .bts-submit {
+    width: 100% !important; padding: 0 !important;
+    background: var(--ink) !important; color: var(--parchment) !important;
+    font-family: 'Montserrat', sans-serif !important; font-size: 10px !important;
+    font-weight: 500 !important; letter-spacing: 0.35em !important;
+    text-transform: uppercase !important; border: none !important;
+    border-radius: 0 !important; cursor: pointer !important;
+    transition: background 0.3s ease !important; margin: 0 !important;
+  }
+  .bts-submit > span { display: block !important; padding: 18px 24px !important; }
+  .bts-submit:hover { background: var(--accent) !important; }
+  .bts-kit-form .formkit-powered-by-convertkit-container { display: none !important; }
+  .bts-kit-form .formkit-alert-success {
+    background: transparent !important; border: none !important;
+    color: var(--gold) !important; font-family: 'Montserrat', sans-serif !important;
+    font-size: 11px !important; letter-spacing: 0.15em !important;
+    text-align: center !important; padding: 16px 0 0 !important;
+    list-style: none !important;
+  }
+  .bts-kit-form .formkit-alert-error {
+    background: transparent !important; border: none !important;
+    color: #c0392b !important; font-family: 'Montserrat', sans-serif !important;
+    font-size: 11px !important; text-align: center !important; list-style: none !important;
+  }
+
+</style>
+
+
+<div class="deco-line left"></div>
+<div class="deco-line right"></div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 1 — LANDING
+══════════════════════════════════════════ -->
+<div id="screen-landing" class="screen active">
+  <p class="brand-mark">Beyond the Surface</p>
+
+  <p class="landing-eyebrow">A Self-Discovery Experience</p>
+
+  <h1 class="landing-title">
+    What's <em>Actually</em><br>Running You
+  </h1>
+
+  <p class="landing-sub">
+    You've done the work. You've read the books. You've had the conversations.<br>
+    And yet — something keeps pulling you back.<br><br>
+    This isn't a personality quiz. This is a diagnostic.<br>
+    In 18 questions, you'll discover where you're stuck, what wound is running the show, and how you've learned to protect yourself from knowing it.
+  </p>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-dot"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <button class="btn-primary">
+    <span>Begin the Excavation</span>
+  </button>
+
+  <p class="landing-footer-note">18 questions &nbsp;·&nbsp; 5 minutes &nbsp;·&nbsp; Your results, delivered</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 2 — QUIZ
+══════════════════════════════════════════ -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <div class="progress-wrap">
+      <span class="progress-label" id="q-counter">1 of 18</span>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <p class="section-label" id="section-label">Part One — Where You Are</p>
+    <p class="question-text" id="question-text"></p>
+  </div>
+
+  <div class="options-grid" id="options-container"></div>
+
+  <div class="quiz-nav">
+    <button class="btn-back" id="btn-back" style="display:none">← Back</button>
+    <button class="btn-next" id="btn-next"><span>Continue →</span></button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 3 — EMAIL GATE (Kit)
+══════════════════════════════════════════ -->
+<div id="screen-email" class="screen">
+  <p class="gate-eyebrow">Your Profile Is Ready</p>
+  <h2 class="gate-title">You've reached<br><em style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold)">the threshold</em></h2>
+  <p class="gate-sub">
+    Enter your email below. Your full three-part profile — where you're stuck, what wound is running you, and how you protect yourself from knowing it — will reveal itself immediately.
+  </p>
+
+  <!-- Kit form wrapper — styled to match the quiz aesthetic -->
+  <div class="kit-wrapper">
+    <script src="https://f.convertkit.com/ckjs/ck.5.js"></script>
+    <form
+      action="https://app.kit.com/forms/9225310/subscriptions"
+      class="seva-form formkit-form bts-kit-form"
+      method="post"
+      data-sv-form="9225310"
+      data-uid="a77f24feb1"
+      data-format="inline"
+      data-version="5"
+      data-options="{&quot;settings&quot;:{&quot;after_subscribe&quot;:{&quot;action&quot;:&quot;message&quot;,&quot;success_message&quot;:&quot;One moment — revealing your profile...&quot;,&quot;redirect_url&quot;:&quot;&quot;},&quot;powered_by&quot;:{&quot;show&quot;:false}},&quot;version&quot;:&quot;5&quot;}"
+      min-width="400 500 600 700 800"
+    >
+      <div data-style="clean">
+        <ul class="formkit-alert formkit-alert-error" data-element="errors" data-group="alert"></ul>
+        <div data-element="fields" data-stacked="true" class="seva-fields formkit-fields">
+          <div class="formkit-field">
+            <input
+              class="formkit-input bts-input"
+              name="email_address"
+              aria-label="Email Address"
+              placeholder="Your email address"
+              required=""
+              type="email"
+            >
+          </div>
+          <button data-element="submit" class="formkit-submit bts-submit">
+            <div class="formkit-spinner"><div></div><div></div><div></div></div>
+            <span>Reveal My Profile</span>
+          </button>
+        </div>
+      </div>
+    </form>
+    <p class="privacy-note">No spam. Ever. Unsubscribe anytime.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SCREEN 4 — RESULTS
+══════════════════════════════════════════ -->
+<div id="screen-results" class="screen">
+  <div class="results-header">
+    <p class="results-greeting" id="results-greeting">Your Profile</p>
+    <h2 class="results-title" id="results-title"></h2>
+    <p class="results-summary" id="results-summary"></p>
+  </div>
+
+  <div class="profile-cards" id="profile-cards"></div>
+
+  <div class="invitation-block">
+    <p class="invitation-eyebrow">What Comes Next</p>
+    <h3 class="invitation-title">The surface has a floor.<br>Are you ready to go deeper?</h3>
+    <p class="invitation-body">
+      This profile is the beginning of the excavation — not the end of it. The work of going to the root requires more than awareness. It requires descent, with someone who knows the terrain.
+      <br><br>
+      I'm building something for you. Stay close.
+    </p>
+    <button class="btn-light">I'm Ready — Keep Me Posted</button>
+  </div>
+
+  <p class="ornament">✦ &nbsp; ✦ &nbsp; ✦</p>
+  <p style="font-size:10px;letter-spacing:0.2em;color:var(--muted);opacity:0.5;margin-bottom:80px;">Beyond the Surface &nbsp;·&nbsp; Rhonda Reliford</p>
+</div>
+
+
+<script>
+// ══════════════════════════════════════════
+// QUESTIONS
+// Each question has: text, section, dimension, and options with scores
+// Dimension A = Where You're Stuck (level 1-3 = surface, 4-5 = subsurface, 6-7 = root)
+// Dimension B = Core Wound (betrayal, abandonment, invisibility, enmeshment, control)
+// Dimension C = Protection Style (intellectualizing, performing, withdrawing, overgiving, narrative-control)
+// ══════════════════════════════════════════
+
+const SECTIONS = [
+  "Part One — Where You Are",
+  "Part One — Where You Are",
+  "Part One — Where You Are",
+  "Part One — Where You Are",
+  "Part One — Where You Are",
+  "Part One — Where You Are",
+  "Part Two — What Wounded You",
+  "Part Two — What Wounded You",
+  "Part Two — What Wounded You",
+  "Part Two — What Wounded You",
+  "Part Two — What Wounded You",
+  "Part Two — What Wounded You",
+  "Part Three — How You Protect Yourself",
+  "Part Three — How You Protect Yourself",
+  "Part Three — How You Protect Yourself",
+  "Part Three — How You Protect Yourself",
+  "Part Three — How You Protect Yourself",
+  "Part Three — How You Protect Yourself",
+];
+
+const questions = [
+  // ── DIMENSION A: WHERE YOU'RE STUCK ──
+  {
+    text: "When something painful happens, your first instinct is to:",
+    dim: "A",
+    options: [
+      { text: "Name it and move on — I'm good at identifying what's wrong", score: { A: 1 } },
+      { text: "Analyze the story — I replay it, looking for the logic", score: { A: 2 } },
+      { text: "Notice a pattern — this has happened before and I want to understand why", score: { A: 3 } },
+      { text: "Feel something I can't name — something older than this moment", score: { A: 4 } },
+    ]
+  },
+  {
+    text: "You've tried to change a pattern in yourself. What happened?",
+    dim: "A",
+    options: [
+      { text: "I made progress for a while, then something pulled me back", score: { A: 2 } },
+      { text: "I understood the pattern intellectually but couldn't stop living it", score: { A: 3 } },
+      { text: "I realized the pattern wasn't the real problem — something deeper was driving it", score: { A: 4 } },
+      { text: "I changed the behavior, but I still feel the same inside", score: { A: 5 } },
+    ]
+  },
+  {
+    text: "When you reflect on your healing journey so far, which statement is most true?",
+    dim: "A",
+    options: [
+      { text: "I'm just starting to see what's been affecting me", score: { A: 1 } },
+      { text: "I understand what happened — I just haven't fully healed it", score: { A: 2 } },
+      { text: "I see the pattern clearly, but I keep recreating it anyway", score: { A: 3 } },
+      { text: "I've done a lot of work, but I feel like I've only scratched the surface", score: { A: 4 } },
+      { text: "I think the wound runs deeper than anything I've touched yet", score: { A: 5 } },
+    ]
+  },
+  {
+    text: "How often do you feel like you're watching yourself react — almost from the outside — unable to stop?",
+    dim: "A",
+    options: [
+      { text: "Rarely — I feel mostly in control of my responses", score: { A: 1 } },
+      { text: "Sometimes — especially in certain relationships or situations", score: { A: 2 } },
+      { text: "Often — there's a version of me that takes over and I don't fully understand her", score: { A: 3 } },
+      { text: "Almost always — my reactions feel older than me", score: { A: 5 } },
+    ]
+  },
+  {
+    text: "If your deepest wound has a root — an original moment or belief — how close do you feel to it?",
+    dim: "A",
+    options: [
+      { text: "I'm not sure I have a wound that deep", score: { A: 1 } },
+      { text: "I have a sense of it, but it's blurry", score: { A: 2 } },
+      { text: "I know it's there — I've felt its edges, but I haven't faced it directly", score: { A: 3 } },
+      { text: "I've been inside it. It's not done with me yet.", score: { A: 5 } },
+    ]
+  },
+  {
+    text: "What does 'healing' mean to you right now?",
+    dim: "A",
+    options: [
+      { text: "Feeling better and moving forward", score: { A: 1 } },
+      { text: "Understanding why I am the way I am", score: { A: 2 } },
+      { text: "Breaking free from patterns I didn't choose", score: { A: 3 } },
+      { text: "Becoming someone new at the root level", score: { A: 5 } },
+    ]
+  },
+
+  // ── DIMENSION B: CORE WOUND ──
+  {
+    text: "The thing that has hurt you most in relationships is:",
+    dim: "B",
+    options: [
+      { text: "People who said they were safe — and weren't", score: { B_betrayal: 2 } },
+      { text: "People who left, pulled away, or stopped showing up", score: { B_abandon: 2 } },
+      { text: "Feeling unseen, unheard, or like you didn't matter", score: { B_invisible: 2 } },
+      { text: "Never quite knowing where you ended and others began", score: { B_enmesh: 2 } },
+    ]
+  },
+  {
+    text: "When trust has been broken for you, what does it shake most deeply?",
+    dim: "B",
+    options: [
+      { text: "My faith in people — I question everyone after", score: { B_betrayal: 2 } },
+      { text: "My sense of security — I become hypervigilant about who might leave", score: { B_abandon: 2 } },
+      { text: "My sense of worth — I wonder if I was even worth being honest with", score: { B_invisible: 2 } },
+      { text: "My sense of self — I lose track of what I actually think or feel", score: { B_enmesh: 2 } },
+    ]
+  },
+  {
+    text: "The fear that lives most quietly underneath your life is:",
+    dim: "B",
+    options: [
+      { text: "That the people closest to me are not who they appear to be", score: { B_betrayal: 2 } },
+      { text: "That if I'm not careful, everyone I love will leave", score: { B_abandon: 2 } },
+      { text: "That I will never truly be known or chosen for who I really am", score: { B_invisible: 2 } },
+      { text: "That I don't actually know what I want — separate from others", score: { B_enmesh: 2 } },
+      { text: "That if I'm not in control of my life, something terrible will happen", score: { B_control: 2 } },
+    ]
+  },
+  {
+    text: "When you were younger, the lesson you absorbed about love was:",
+    dim: "B",
+    options: [
+      { text: "You can't fully trust anyone, even those who love you", score: { B_betrayal: 2 } },
+      { text: "Love is temporary — people always go eventually", score: { B_abandon: 2 } },
+      { text: "Being seen and truly known felt rare or unsafe", score: { B_invisible: 2 } },
+      { text: "Love meant merging — having no separate self was just what closeness looked like", score: { B_enmesh: 2 } },
+      { text: "Love was conditional — and I learned to manage the conditions carefully", score: { B_control: 2 } },
+    ]
+  },
+  {
+    text: "In your closest relationships, the dynamic that repeats most is:",
+    dim: "B",
+    options: [
+      { text: "I open up, something happens that feels like a betrayal, and I close back down", score: { B_betrayal: 2 } },
+      { text: "I get close, then anxiety creeps in — what if they pull away?", score: { B_abandon: 2 } },
+      { text: "I give a lot and still feel unseen or undervalued", score: { B_invisible: 2 } },
+      { text: "I lose myself in other people's needs, moods, and worlds", score: { B_enmesh: 2 } },
+      { text: "I try to manage outcomes so I don't get hurt again", score: { B_control: 2 } },
+    ]
+  },
+  {
+    text: "If your pain had a first sentence — the thing you learned about yourself from the wound — it would be:",
+    dim: "B",
+    options: [
+      { text: '"I cannot trust my own read of people."', score: { B_betrayal: 2 } },
+      { text: '"I am always one step away from being alone."', score: { B_abandon: 2 } },
+      { text: '"I am not someone people choose to truly see."', score: { B_invisible: 2 } },
+      { text: '"I don\'t know who I am without someone else to orient around."', score: { B_enmesh: 2 } },
+      { text: '"If I let go of control, I will fall apart."', score: { B_control: 2 } },
+    ]
+  },
+
+  // ── DIMENSION C: PROTECTION STYLE ──
+  {
+    text: "When emotions get overwhelming, your most natural response is to:",
+    dim: "C",
+    options: [
+      { text: "Think about it — analyze, research, make sense of it", score: { C_intel: 2 } },
+      { text: "Get busy — stay productive, stay useful, keep moving", score: { C_perform: 2 } },
+      { text: "Pull back — go quiet, go still, go inward", score: { C_withdraw: 2 } },
+      { text: "Focus on others — their pain is easier to hold than my own", score: { C_overgive: 2 } },
+      { text: "Shape the narrative — decide how the story will be told", score: { C_narrative: 2 } },
+    ]
+  },
+  {
+    text: "In conflict, you tend to:",
+    dim: "C",
+    options: [
+      { text: "Make your case — logically, thoroughly, with evidence", score: { C_intel: 2 } },
+      { text: "Stay calm and composed, even when you're falling apart inside", score: { C_perform: 2 } },
+      { text: "Shut down or disappear until things feel safe again", score: { C_withdraw: 2 } },
+      { text: "Absorb the other person's pain and try to fix it", score: { C_overgive: 2 } },
+      { text: "Get very precise about what happened and who said what", score: { C_narrative: 2 } },
+    ]
+  },
+  {
+    text: "People in your life would say you are someone who:",
+    dim: "C",
+    options: [
+      { text: "Always has an explanation or insight for everything", score: { C_intel: 2 } },
+      { text: "Never seems to break — always shows up strong", score: { C_perform: 2 } },
+      { text: "Is hard to reach sometimes — you go somewhere people can't follow", score: { C_withdraw: 2 } },
+      { text: "Gives endlessly, even when you have nothing left", score: { C_overgive: 2 } },
+      { text: "Needs to be understood correctly — the story has to be right", score: { C_narrative: 2 } },
+    ]
+  },
+  {
+    text: "The thing you are most afraid people will see if you drop your guard is:",
+    dim: "C",
+    options: [
+      { text: "That underneath the analysis, I'm just afraid", score: { C_intel: 2 } },
+      { text: "That I'm not as strong as I appear — I'm exhausted", score: { C_perform: 2 } },
+      { text: "That I don't know how to let people in — not really", score: { C_withdraw: 2 } },
+      { text: "That I give so much because I don't believe I'm enough just as I am", score: { C_overgive: 2 } },
+      { text: "That the story I've been telling might not be entirely true", score: { C_narrative: 2 } },
+    ]
+  },
+  {
+    text: "The way you typically cope when life feels out of control is:",
+    dim: "C",
+    options: [
+      { text: "I consume information — books, podcasts, research — until I feel like I understand it", score: { C_intel: 2 } },
+      { text: "I perform normalcy — I keep going, keep functioning, keep showing up", score: { C_perform: 2 } },
+      { text: "I retreat — I need solitude and silence to restore myself", score: { C_withdraw: 2 } },
+      { text: "I pour into someone else — helping them helps me feel less lost", score: { C_overgive: 2 } },
+      { text: "I write, talk, or process until I've shaped what happened into something I can hold", score: { C_narrative: 2 } },
+    ]
+  },
+  {
+    text: "If your protection style had a price, it would be:",
+    dim: "C",
+    options: [
+      { text: "I've thought my way out of actually feeling things", score: { C_intel: 2 } },
+      { text: "No one has ever really seen me struggle — and I'm lonely in that", score: { C_perform: 2 } },
+      { text: "Closeness frightens me more than I usually admit", score: { C_withdraw: 2 } },
+      { text: "I've poured myself out for people who never filled me back up", score: { C_overgive: 2 } },
+      { text: "I've spent years trying to make people understand me — instead of letting them know me", score: { C_narrative: 2 } },
+    ]
+  },
+];
+
+// ══════════════════════════════════════════
+// RESULT PROFILES
+// ══════════════════════════════════════════
+
+const levelProfiles = {
+  surface: {
+    label: "Where You're Stuck",
+    title: "You Are Working at the Surface",
+    body: "You've become aware that something is off, and you've named it. That awareness is real and it matters — but you're still in the shallower layers of the excavation. You're seeing the presenting problem, and possibly the story around it, but the architecture beneath hasn't been touched yet. Most healing modalities will keep you here. The work ahead requires going deeper than insight."
+  },
+  subsurface: {
+    label: "Where You're Stuck",
+    title: "You Are at the Edge of the Subsurface",
+    body: "You've moved past the obvious. You can see your patterns — you know the emotional loops, the triggers, the ways you respond before you can stop yourself. You're doing more than surface work. But you're hovering at a threshold: below this layer lives the unconscious material, the inherited beliefs, the parts of yourself that were shaped long before you had language for them. You can feel it — but you haven't descended into it yet."
+  },
+  root: {
+    label: "Where You're Stuck",
+    title: "You Are Close to the Root",
+    body: "You've gone deep. The work you've done has brought you to the edge of the original wound — the core fear, the core belief, the moment or message that set everything in motion. You may have touched it. You may have named it. But there's a difference between naming a root and extracting it. The deepest healing is not about understanding what happened — it's about releasing who you became because of it."
+  }
+};
+
+const woundProfiles = {
+  betrayal: {
+    label: "What Wound Is Running You",
+    title: "The Wound of Betrayal",
+    body: "Your nervous system learned early that the people closest to you could not be fully trusted — and it has been managing that reality ever since. Betrayal doesn't just damage relationships; it damages perception. It teaches you to scan for dishonesty, to brace for the reveal, to keep part of yourself withheld even when you want to be fully open. The cost of this wound is not just in relationships — it's in your relationship with your own knowing. Somewhere, you learned not to trust what you see."
+  },
+  abandonment: {
+    label: "What Wound Is Running You",
+    title: "The Wound of Abandonment",
+    body: "Underneath much of what you do is a quiet, relentless calculus: will they stay? Abandonment wounds don't announce themselves — they whisper through hypervigilance, through the way you monitor emotional temperature in a room, through the way you sometimes pull away first to avoid being left. The wound is not simply about people leaving. It's about the belief it left behind: that you are someone who gets left. That is the root that needs extracting."
+  },
+  invisibility: {
+    label: "What Wound Is Running You",
+    title: "The Wound of Invisibility",
+    body: "You learned, somewhere, that being truly seen was either rare or unsafe — and that you would have to earn acknowledgment, perform for recognition, or settle for being known only partially. The wound of invisibility is one of the quietest and most pervasive. It lives in the body as a kind of ache — the longing to be chosen exactly as you are, not for what you produce or provide. The deepest question this wound asks is: am I worth knowing? The answer it installed was not enough."
+  },
+  enmeshment: {
+    label: "What Wound Is Running You",
+    title: "The Wound of Enmeshment",
+    body: "You grew up in a relational field where boundaries between self and other were thin or absent — where love and loss of self were indistinguishable. The wound of enmeshment leaves you with a particular kind of disorientation: you are attuned to everyone around you, often at the expense of knowing your own truth. You are not simply a people-pleaser. You are someone who was never given permission — or the safety — to have a separate self. The excavation here is about recovery of a self that was buried, not broken."
+  },
+  control: {
+    label: "What Wound Is Running You",
+    title: "The Wound Beneath the Need for Control",
+    body: "Control is not a character flaw. It is an intelligent response to an environment that once felt unsafe or unpredictable. Somewhere, you learned that if you could manage enough variables — outcomes, perceptions, relationships, narratives — you could prevent being hurt again. The exhaustion you feel is real: it takes enormous energy to hold the world in place. The wound beneath the control is not a love of power. It is a terror of powerlessness — and an original moment when that terror was justified."
+  }
+};
+
+const protectionProfiles = {
+  intel: {
+    label: "How You Protect Yourself",
+    title: "The Armor of Intellectualization",
+    body: "You are brilliant at understanding. You can name what happened, trace its origins, build a coherent framework around your own pain — and still be completely untouched by it. This is not a failure of intelligence. It is intelligence repurposed as armor. Thinking has kept you functional, safe, and above the waterline. But there is a version of healing that happens below the mind, in the body, in the places where understanding cannot reach. That is the territory you have not yet entered."
+  },
+  perform: {
+    label: "How You Protect Yourself",
+    title: "The Armor of Performing Strength",
+    body: "You show up. No matter what is happening inside, you are present, capable, composed. People rely on you — and some part of you relies on being relied upon. The performance of strength is one of the most culturally rewarded protection strategies, which makes it one of the hardest to see. The cost is not visible on the outside. It lives in the private exhaustion, the loneliness of never being witnessed in your own struggle, the subtle grief of being needed but not truly known."
+  },
+  withdraw: {
+    label: "How You Protect Yourself",
+    title: "The Armor of Strategic Withdrawal",
+    body: "When things become too much, you disappear — into solitude, into silence, into yourself. This is not weakness. It is a finely calibrated survival response: if you cannot be reached, you cannot be hurt. But the same walls that kept danger out have also kept connection at arm's length. The work here is not about forcing yourself to stay when everything in you says go. It's about slowly learning to trust that staying is survivable — and that being known is worth the risk."
+  },
+  overgive: {
+    label: "How You Protect Yourself",
+    title: "The Armor of Over-Giving",
+    body: "You lead with generosity — with your time, your care, your labor, your presence. And underneath that generosity is a belief so quiet you may never have named it: that being needed is safer than being wanted. That love must be earned. That if you give enough, no one will leave. The armor of over-giving is seductive because it looks like virtue. But it has a cost you have paid in full many times over — the depletion of a woman who has poured herself out for people who never asked where she was being filled."
+  },
+  narrative: {
+    label: "How You Protect Yourself",
+    title: "The Armor of Controlling the Narrative",
+    body: "You are a precise, careful keeper of the story. You know what happened, in what order, and why — and you need others to know it too. This is not vanity. It is protection. If you control the narrative, you control how you are perceived — and if you control how you are perceived, you can manage whether you are hurt again. The armor works. But it also keeps you at a distance from something more vulnerable and more true: the version of events that doesn't hold together so neatly, and the self who was present in the mess of it."
+  }
+};
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let currentQ = 0;
+let answers = new Array(questions.length).fill(null);
+let scores = {
+  A: 0,
+  B_betrayal: 0, B_abandon: 0, B_invisible: 0, B_enmesh: 0, B_control: 0,
+  C_intel: 0, C_perform: 0, C_withdraw: 0, C_overgive: 0, C_narrative: 0
+};
+
+// ══════════════════════════════════════════
+// FUNCTIONS
+// ══════════════════════════════════════════
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  el.style.display = 'flex';
+  setTimeout(() => el.classList.add('active'), 10);
+  window.scrollTo(0, 0);
+}
+
+function startQuiz() {
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('q-counter').textContent = `${currentQ + 1} of ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${((currentQ) / questions.length) * 100}%`;
+  document.getElementById('section-label').textContent = SECTIONS[currentQ];
+  document.getElementById('question-text').textContent = q.text;
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt.text;
+    if (answers[currentQ] === i) btn.classList.add('selected');
+    btn.onclick = () => selectOption(i);
+    container.appendChild(btn);
+  });
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.classList.toggle('ready', answers[currentQ] !== null);
+
+  const backBtn = document.getElementById('btn-back');
+  backBtn.style.display = currentQ > 0 ? 'inline-block' : 'none';
+
+  nextBtn.textContent = currentQ === questions.length - 1 ? 'See My Profile →' : 'Continue →';
+}
+
+function selectOption(index) {
+  answers[currentQ] = index;
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.classList.toggle('selected', i === index);
+  });
+  document.getElementById('btn-next').classList.add('ready');
+}
+
+function goNext() {
+  if (answers[currentQ] === null) return;
+
+  // Tally score for this question
+  const q = questions[currentQ];
+  const chosen = q.options[answers[currentQ]];
+  Object.entries(chosen.score).forEach(([key, val]) => {
+    scores[key] = (scores[key] || 0) + val;
+  });
+
+  if (currentQ < questions.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    showScreen('screen-email');
+  }
+}
+
+function goBack() {
+  if (currentQ > 0) {
+    // Remove the score for the question we're going back from
+    const q = questions[currentQ];
+    if (answers[currentQ] !== null) {
+      const chosen = q.options[answers[currentQ]];
+      Object.entries(chosen.score).forEach(([key, val]) => {
+        scores[key] = (scores[key] || 0) - val;
+      });
+    }
+    currentQ--;
+    renderQuestion();
+  }
+}
+
+function computeResults() {
+  // ── COMPUTE DIMENSION A
+  let levelResult;
+  if (scores.A <= 8) levelResult = levelProfiles.surface;
+  else if (scores.A <= 16) levelResult = levelProfiles.subsurface;
+  else levelResult = levelProfiles.root;
+
+  // ── COMPUTE DIMENSION B
+  const woundScores = {
+    betrayal: scores.B_betrayal,
+    abandonment: scores.B_abandon,
+    invisibility: scores.B_invisible,
+    enmeshment: scores.B_enmesh,
+    control: scores.B_control
+  };
+  const topWound = Object.entries(woundScores).sort((a,b) => b[1]-a[1])[0][0];
+  const woundResult = woundProfiles[topWound];
+
+  // ── COMPUTE DIMENSION C
+  const protectScores = {
+    intel: scores.C_intel,
+    perform: scores.C_perform,
+    withdraw: scores.C_withdraw,
+    overgive: scores.C_overgive,
+    narrative: scores.C_narrative
+  };
+  const topProtect = Object.entries(protectScores).sort((a,b) => b[1]-a[1])[0][0];
+  const protectResult = protectionProfiles[topProtect];
+
+  return { levelResult, woundResult, protectResult };
+}
+
+function showResults() {
+  const { levelResult, woundResult, protectResult } = computeResults();
+
+  // ── RENDER
+  document.getElementById('results-greeting').textContent = `Here is your profile`;
+  document.getElementById('results-title').textContent = levelResult.title;
+  document.getElementById('results-summary').textContent =
+    `Three dimensions. One honest picture. Read each layer slowly — this is not a label. It is a map.`;
+
+  const cards = document.getElementById('profile-cards');
+  cards.innerHTML = '';
+
+  [levelResult, woundResult, protectResult].forEach((profile, i) => {
+    const card = document.createElement('div');
+    card.className = 'profile-card';
+    card.innerHTML = `
+      <span class="card-number">${i + 1}</span>
+      <p class="card-label">${profile.label}</p>
+      <h3 class="card-title">${profile.title}</h3>
+      <p class="card-body">${profile.body}</p>
+    `;
+    cards.appendChild(card);
+  });
+
+  showScreen('screen-results');
+}
+
+// ── KIT FORM INTEGRATION
+// Watch for Kit's success message and trigger results reveal
+function captureAndReveal() {
+  // Kit handles its own submission — we just watch for the success state
+  // and then show results after a short delay so Kit can process
+  setTimeout(() => {
+    const errors = document.querySelector('.formkit-alert-error');
+    const hasError = errors && errors.children.length > 0;
+    if (!hasError) {
+      setTimeout(showResults, 1200);
+    }
+  }, 800);
+}
+
+// Wire up all buttons via event listeners (more compatible with Carrd's sandbox)
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Begin button
+  const beginBtn = document.querySelector('.btn-primary');
+  if (beginBtn) beginBtn.addEventListener('click', startQuiz);
+
+  // Next button
+  const nextBtn = document.getElementById('btn-next');
+  if (nextBtn) nextBtn.addEventListener('click', goNext);
+
+  // Back button
+  const backBtn = document.getElementById('btn-back');
+  if (backBtn) backBtn.addEventListener('click', goBack);
+
+  // Kit submit button
+  const kitBtn = document.querySelector('.bts-submit');
+  if (kitBtn) kitBtn.addEventListener('click', captureAndReveal);
+
+  // Kit MutationObserver for success
+  const observer = new MutationObserver(() => {
+    const success = document.querySelector('.formkit-alert-success');
+    if (success && success.children.length > 0) {
+      setTimeout(showResults, 900);
+      observer.disconnect();
+    }
+  });
+  const form = document.querySelector('.seva-form');
+  if (form) observer.observe(form, { childList: true, subtree: true });
+});
+</script>
